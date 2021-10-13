@@ -5,21 +5,22 @@ router.get("/api/workouts", (req, res) => {
     console.log(req.body);
     Workout.aggregate([
         {
-         $addFields: {
-            totalDuration: 
-            {$sum: "$exercises.duration"},
-            totalDistance:
-            {$sum: "$exercises.distance"},
+            $addFields: {
+                totalDuration:
+                    { $sum: "$exercises.duration" },
+                totalDistance:
+                    { $sum: "$exercises.distance" },
 
-        }}
+            }
+        }
     ])
-    .then(dbWorkout => {
-        console.log(dbWorkout);
-        res.json(dbWorkout);
-    })
-    .catch(err => {
-        res.status(400).json(err);
-    });
+        .then(dbWorkout => {
+            console.log(dbWorkout);
+            res.json(dbWorkout);
+        })
+        .catch(err => {
+            res.status(400).json(err);
+        });
 });
 
 router.post("/api/workouts", ({ body }, res) => {
@@ -34,8 +35,7 @@ router.post("/api/workouts", ({ body }, res) => {
 
 
 router.put("/api/workouts/:id", (req, res) => {
-    console.log(req.params.id);
-    console.log(req.body);
+
     Workout.findByIdAndUpdate(req.params.id, { $push: { exercises: req.body } }, { new: true })
         .then(dbWorkout => {
             console.log(dbWorkout);
@@ -50,24 +50,23 @@ router.put("/api/workouts/:id", (req, res) => {
 router.get("/api/workouts/range", (req, res) => {
     Workout.aggregate([
         {
-         $addFields: {
-            totalDuration: 
-            {$sum: "$exercises.duration"},
-                
-             totalWeight: 
-        {$sum: "$exercises.weight" },
-        
+            $addFields: {
+                totalDuration:
+                    { $sum: "$exercises.duration" },
+
+                totalWeight:
+                    { $sum: "$exercises.weight" },
+
+            }
         }
-    }
     ])
-    .then(dbWorkout => {
-        const newArr = dbWorkout.slice(-7);
-        console.log(newArr);
-        res.json(newArr);
-    })
-    .catch(err => {
-        res.status(400).json(err);
-    });
+        .then(dbWorkout => {
+            const newArr = dbWorkout.slice(-7);
+            res.json(newArr);
+        })
+        .catch(err => {
+            res.status(400).json(err);
+        });
 });
 
 
